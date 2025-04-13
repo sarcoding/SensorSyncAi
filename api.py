@@ -6,6 +6,9 @@ from fastapi.responses import JSONResponse
 from typing import Dict, Union
 import uvicorn
 import numpy as np
+# import warnings
+# warnings.filterwarnings("ignore")
+
 
 
 DEFAULT_MODEL_CONFIG = {
@@ -78,6 +81,7 @@ def apply_preprocessing(raw_inputs: dict, config: dict, scaler=None) -> list:
     # Extract feature names and values
     feature_names = list(raw_inputs.keys())
     processed = list(raw_inputs.values())
+    print("ososdfoasdf", processed)
 
     # Apply OneHot Encoding (if applicable)
     onehot_config = config.get("OneHotEncoding", {})
@@ -118,15 +122,19 @@ def apply_preprocessing(raw_inputs: dict, config: dict, scaler=None) -> list:
 
     # Convert to numpy array for further processing
     processed = np.array(processed, dtype=float).reshape(1, -1)
+    print("dfasdfhsfhsh",processed)
 
     # Apply Standard Scaling (if applicable)
     scale_config = config.get("StandardScaling", {})
+    print("NNNNNNNNNNN", scale_config)
     scale_cols = scale_config.get("columns", [])
 
     if scaler and scale_cols:
+        print("Mmmmmmmsdfa")
         scale_indices = [feature_names.index(col) for col in scale_cols]
         processed_scaled = processed.copy()
         processed_scaled[:, scale_indices] = scaler.transform(processed[:, scale_indices])
+        print("/////////", processed_scaled)
         return processed_scaled.tolist()
 
     return processed.tolist()
@@ -172,16 +180,19 @@ async def predict(mod: str, inputs: Dict[str, Union[str, float, int]]):
     # Predict health score
     model = model_data["Model"]
     framework = model_config.get("framework", "sklearn")
-    health_calculation = model_config.get("health_calculation", "direct")
+    health_calculation = model_config.get("health_calculation", "predict_proba")
     health_mapping = model_config.get("health_mapping", {})
     health_multiplier = model_config.get("health_multiplier", 1)
+    print("oooooooo", health_multiplier)
 
     if framework == "sklearn":
         if health_calculation == "predict_proba":
             # Get probability distribution
             proba = model.predict_proba(processed_inputs)[0]
             class_index = health_mapping.get("class_index", 0)  # Default to class 0
+            print("********************", proba[class_index])
             health_score = proba[class_index] * health_multiplier
+            print("*****", health_score)
             prediction = int(health_score < 50)  # Example threshold for binary classification
         elif health_calculation == "direct":
             # Get raw prediction
@@ -195,8 +206,9 @@ async def predict(mod: str, inputs: Dict[str, Union[str, float, int]]):
             # Get probability distribution from TensorFlow model
             proba = model.predict(processed_inputs)[0]
             class_index = health_mapping.get("class_index", 0)  # Default to class 0
+            
             health_score = proba[class_index] * health_multiplier
-            prediction = int(health_score < 0.5)  # Example threshold for binary classification
+            prediction = int(health_score < 50)  # Example threshold for binary classification
         elif health_calculation == "direct":
             # Get raw prediction from TensorFlow model
             raw_prediction = model.predict(processed_inputs)[0]
