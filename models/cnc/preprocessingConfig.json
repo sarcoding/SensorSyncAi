@@ -6,6 +6,6 @@
       }
     },
     "StandardScaling": {
-      "columns": [ "Air temperature [K]",	"Process temperature [K]", "Rotational speed [rpm]",	"Torqure [Nm]", "Tool wear [Nm]","Type_H",	"Type_L",	"Type_M"]
+      "columns": [ "Air temperature [K]",	"Process temperature [K]", "Rotational speed [rpm]",	"Torque [Nm]", "Tool wear [min]","Type_H",	"Type_L",	"Type_M"]
     }
 }
