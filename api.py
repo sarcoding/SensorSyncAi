@@ -6,6 +6,18 @@ from fastapi.responses import JSONResponse
 from typing import Dict, Union
 import uvicorn
 import numpy as np
+from fastapi import FastAPI, HTTPException
+import numpy as np
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import make_pipeline
+from pydantic import BaseModel
+
+
+class PredictionRequest(BaseModel):
+    previous_values: list[float]
+    degree: int = 3
+    forecast_steps: int = 5
 
 
 
@@ -121,6 +133,29 @@ def reorder_inputs(processed_inputs, expected_sequence):
     current_features = processed_inputs[0]
     reordered_features = [current_features[expected_sequence.index(feature)] for feature in expected_sequence]
     return np.array(reordered_features).reshape(1, -1)
+
+
+@app.post("/predict_next_maintenance")
+async def predict_health(data: PredictionRequest):
+    try:
+        if len(data.previous_values) < 20:
+            raise ValueError("At least 20 previous values are required")
+        
+        X = np.arange(len(data.previous_values)).reshape(-1, 1)
+        y = np.array(data.previous_values).reshape(-1, 1)
+        
+        model = make_pipeline(PolynomialFeatures(data.degree), LinearRegression())
+        model.fit(X, y)
+        
+        future_X = np.arange(len(data.previous_values), len(data.previous_values) + data.forecast_steps).reshape(-1, 1)
+        predictions = model.predict(future_X)
+        
+        return {"predictions": [float(pred[0]) for pred in predictions]}
+    
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
 
 @app.post("/getPred/{mod}/")
 async def predict(mod: str, inputs: Dict[str, Union[str, float, int]]):
