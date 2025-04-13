@@ -1,0 +1,11 @@
+{
+    "input_sequence": ["step_in_cycle", "vibration_rms", "temperature", "pressure", "rotational_speed", "current", "operating_condition_High Load", "operating_condition_Low Load", "operating_condition_Medium Load"],
+    "health_calculation": "predict",
+    "health_multiplier": 100,
+    "requires_tensor": true,
+    "framework": "tensorflow",
+    "health_mapping": {
+        "source": "probability",
+        "class_index": 0
+    }
+}

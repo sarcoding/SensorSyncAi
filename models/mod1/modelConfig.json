@@ -1,0 +1,11 @@
+{
+    "input_sequence": ["Air temperature [K], Process temperature [K], Rotational speed [rpm]", "Torque [Nm]", "Tool wear [min]", "Type_H", "Type_L", "Type_M"],
+    "health_calculation": "predict_proba",
+    "health_multiplier": 100,
+    "requires_tensor": false,
+    "framework": "sklearn",
+    "health_mapping": {
+        "source": "probability",
+        "class_index": 0
+    }
+}

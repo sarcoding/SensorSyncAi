@@ -1,0 +1,11 @@
+{
+    "OneHotEncoding": {
+      "operating_condition": {
+        "categories": ["High Load", "Low Load", "Medium Load"],
+        "columns": ["operating_condition_High Load", "operating_condition_Low Load", "operating_condition_Medium Load"]
+      }
+    },
+    "StandardScaling": {
+      "columns": ["step_in_cycle", "vibration_rms", "temperature", "pressure", "rotational_speed", "current"]
+    }
+  }
