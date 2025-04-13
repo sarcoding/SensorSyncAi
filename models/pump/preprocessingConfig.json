@@ -1,0 +1,9 @@
+{
+    "StandardScaling": {
+      "columns":  [
+        "pressure_psi", "flow_rate_gpm", "temperature_celsius", 
+        "vibration_mm_s", "power_consumption_kw", "noise_level_db", 
+        "oil_viscosity", "hour", "day_of_week", "month"
+    ]
+    }
+}

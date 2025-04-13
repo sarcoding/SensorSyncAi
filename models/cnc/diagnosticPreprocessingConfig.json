@@ -1,0 +1,11 @@
+{
+    "OneHotEncoding": {
+      "Type": {
+        "categories": ["H", "L", "M" ],
+        "columns": ["Type_H", "Type_L", "Type_M"]
+      }
+    },
+    "StandardScaling": {
+      "columns": [ "Air temperature [K]",	"Process temperature [K]", "Rotational speed [rpm]",	"Torque [Nm]", "Tool wear [min]","Type_H",	"Type_L",	"Type_M"]
+    }
+}

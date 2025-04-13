@@ -133,7 +133,6 @@ async def predict(mod: str, inputs: Dict[str, Union[str, float, int]]):
         model_config = model_data.get("ModelConfig", DEFAULT_MODEL_CONFIG)
 
         processed_inputs = apply_preprocessing(inputs, preproc_config, model_data.get("Scaler"))
-        expected_sequence = model_config.get("input_sequence", [])
 
         if model_config.get("requires_tensor", False):
             import tensorflow as tf
@@ -175,7 +174,7 @@ async def predict(mod: str, inputs: Dict[str, Union[str, float, int]]):
 
         diagnostic = "No Diagnostics Available"
         if prediction == 1 and "diagnosticModel" in model_data:
-            diag_input = model_data["diagnosticScaler"].transform(processed_inputs)
+            diag_input = apply_preprocessing(inputs, preproc_config, model_data.get("diagnosticScaler"))
             diag_result = model_data["diagnosticModel"].predict(diag_input)[0]
             pred_class = 0
             for i in diag_result:
